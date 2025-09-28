@@ -36,12 +36,10 @@ fun NotesScreen(vm: NoteViewModel) {
 
     Scaffold(
         topBar = {
-            androidx.compose.material3.Surface {
-                Text(
-                    "AppTrack Notes",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(16.dp)
-                )
+            Row(Modifier.padding(16.dp)) {
+                Text("AppTrack Notes", style = MaterialTheme.typography.titleLarge)
+                Spacer(Modifier.weight(1f))
+                Button(onClick = { vm.syncNow() }) { Text("Sincronizar") }
             }
         }
     ) { padding ->
@@ -50,33 +48,24 @@ fun NotesScreen(vm: NoteViewModel) {
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(value = content, onValueChange = { content = it }, label = { Text("Contenido") }, modifier = Modifier.fillMaxWidth())
             Spacer(Modifier.height(8.dp))
-            Button(
-                onClick = {
-                    if (title.isNotBlank() || content.isNotBlank()) {
-                        vm.add(title.trim(), content.trim())
-                        title = ""; content = ""
-                    }
+            Button(onClick = {
+                if (title.isNotBlank() || content.isNotBlank()) {
+                    vm.add(title.trim(), content.trim())
+                    title = ""; content = ""
                 }
-            ) { Text("Agregar") }
-
+            }) { Text("Agregar") }
             Spacer(Modifier.height(16.dp))
-            Divider()
+            HorizontalDivider()
             Spacer(Modifier.height(8.dp))
 
-            LazyColumn {
-                items(notes) { n ->
-                    ListItem(
-                        headlineContent = { Text(n.title.ifBlank { "(Sin título)" }) },
-                        supportingContent = { Text(n.content) },
-                        trailingContent = {
-                            TextButton(onClick = { vm.delete(n.id) }) { Text("Borrar") }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { /* aquí podrías abrir edición más adelante */ }
-                    )
-                    Divider()
-                }
+            notes.forEach { n ->
+                ListItem(
+                    headlineContent = { Text(n.title.ifBlank { "(Sin título)" }) },
+                    supportingContent = { Text(n.content) },
+                    trailingContent = { TextButton(onClick = { vm.delete(n.id) }) { Text("Borrar") } },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                HorizontalDivider()
             }
         }
     }

@@ -20,4 +20,13 @@ interface NoteDao {
     // Útil para limpieza eventual
     @Query("DELETE FROM notes WHERE isDeleted = 1")
     suspend fun purgeDeleted()
+
+    @Query("SELECT * FROM notes WHERE id = :id LIMIT 1")
+    suspend fun getById(id: Long): Note?
+
+    @Query("SELECT * FROM notes WHERE remoteId = :remoteId LIMIT 1")
+    suspend fun getByRemoteId(remoteId: String): Note?
+
+    @Query("SELECT * FROM notes WHERE isSynced = 0 OR isDeleted = 1")
+    suspend fun getAllPendingSync(): List<Note>
 }
