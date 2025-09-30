@@ -29,4 +29,8 @@ interface NoteDao {
 
     @Query("SELECT * FROM notes WHERE isSynced = 0 OR isDeleted = 1")
     suspend fun getAllPendingSync(): List<Note>
+
+    @Query("DELETE FROM notes")
+    suspend fun clearAll()
+
 }
